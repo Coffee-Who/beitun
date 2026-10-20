@@ -474,7 +474,14 @@ function sameShop(a, b) {
   return A.size && B.size && n / Math.min(A.size, B.size) >= 0.7 && n >= 3;
 }
 function mergeForm(base, extra) {
+  const exact = new Map(base.map((p) => [p.name, p]));
   extra.forEach((f) => {
+    /* 推薦人「內建資料」：Apps Script 替內建店家查好的座標，只補座標，不另外新增；離總站太遠的多半查錯，略過 */
+    if (f.by === '內建資料') {
+      const q = exact.get(f.name);
+      if (q && f.lat != null && f.lng != null && km(CONFIG.center, [f.lat, f.lng]) <= CONFIG.radiusKm) { q.lat = f.lat; q.lng = f.lng; q.approx = false; }
+      return;
+    }
     const p = base.find((q) => q.main === f.main && sameShop(q.name, f.name));
     if (!p) { base.push(f); return; }
     if (f.lat != null && f.lng != null) { p.lat = f.lat; p.lng = f.lng; p.approx = false; }
