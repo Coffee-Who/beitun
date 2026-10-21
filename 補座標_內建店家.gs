@@ -90,3 +90,40 @@ function 區_(loc) {
   const m = String(loc || '').match(/^(北屯|潭子|北區|西區|西屯|南屯|東區|中區|南區|太平|大雅)/);
   return m ? (m[1].slice(-1) === '區' ? m[1] : m[1] + '區') : '';
 }
+
+/**
+ * 補地址：替「內建資料」裡已經有座標、但地址空白的店，用 Google 地圖反查地址
+ * 用法：上方函式選「補地址」→ 執行；寫「還有 N 筆」就再按一次
+ * 網頁會把查到的地址換掉原本只寫「北屯」「台中」的位置，商圈也會跟著重新歸類
+ */
+function 補地址() {
+  const start = Date.now();
+  const id = PropertiesService.getScriptProperties().getProperty('SS_ID');
+  if (!id) throw new Error('找不到試算表：請在原本建立投稿表單的那個 Apps Script 專案裡執行');
+  const sheet = 取得資料表_(id);
+  const data = sheet.getDataRange().getValues();
+  const head = data[0], col = function (n) { return head.indexOf(n); };
+  const iA = col('地址'), iLat = col('緯度'), iLng = col('經度'), iBy = col('推薦人');
+  const geo = Maps.newGeocoder().setRegion('tw').setLanguage('zh-TW');
+  let done = 0, failed = 0, left = 0;
+  for (let r = 1; r < data.length; r++) {
+    const row = data[r];
+    if (String(row[iBy]) !== '內建資料' || String(row[iA]).trim() || !row[iLat] || !row[iLng]) continue;
+    if (Date.now() - start > TIME_LIMIT_MS) { left++; continue; }
+    let addr = '';
+    try {
+      const res = geo.reverseGeocode(Number(row[iLat]), Number(row[iLng]));
+      if (res.status === 'OK' && res.results.length) addr = 整理地址_(res.results[0].formatted_address);
+    } catch (e) {}
+    if (addr) { sheet.getRange(r + 1, iA + 1).setValue(addr); done++; } else failed++;
+    Utilities.sleep(120);
+  }
+  Logger.log('補上地址 ' + done + ' 筆；查不到 ' + failed + ' 筆');
+  if (left) Logger.log('還有 ' + left + ' 筆，請再按一次「執行」');
+  else Logger.log('全部做完了，約 5 分鐘後網站就會更新');
+}
+
+/* 「406台灣台中市北屯區敦富路68號」→「台中市北屯區敦富路68號」 */
+function 整理地址_(s) {
+  return String(s || '').replace(/^\d{3,6}/, '').replace(/^台灣/, '').replace(/^臺中市/, '台中市').trim();
+}

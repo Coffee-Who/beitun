@@ -457,6 +457,7 @@ function fromForm(rows) {
     };
   }).filter(Boolean);
 }
+const hasStreetNo = (l) => /\d+號|\d+-\d+|[路街]\S*\d|商場\s*[AB]/.test((l || '').replace(/[（(].*?[）)]/g, ''));
 /* 投稿的地址也自動歸商圈（規則同資料表） */
 const ZONE_KEYS = {
   '機捷單元12': /機捷|單元12|單元十二|敦富|南興|軍福|大地商場|大地廣場|總站夜市|星辰市集/, '軍功東山': /軍功路|東山路/,
@@ -481,7 +482,14 @@ function mergeForm(base, extra) {
     /* 推薦人「內建資料」：Apps Script 替內建店家查好的座標，只補座標，不另外新增；離總站太遠的多半查錯，略過 */
     if (f.by === '內建資料') {
       const q = exact.get(f.name);
-      if (q && f.lat != null && f.lng != null && km(CONFIG.center, [f.lat, f.lng]) <= CONFIG.radiusKm) { q.lat = f.lat; q.lng = f.lng; q.approx = false; }
+      if (q && f.lat != null && f.lng != null && km(CONFIG.center, [f.lat, f.lng]) <= CONFIG.radiusKm) {
+        q.lat = f.lat; q.lng = f.lng; q.approx = false;
+        /* 原本只寫「北屯」「台中」這類區域的，換成查到的完整地址，商圈也重新歸類 */
+        if (f.loc && !hasStreetNo(q.loc)) {
+          q.loc = f.loc.replace(/^(台中市|臺中市)/, '').replace(/^(\S{1,3}區)/, (m) => m.replace('區', '') + ' ');
+          const z = zonesOf(f.loc); if (z.length) q.zones = z;
+        }
+      }
       return;
     }
     const p = base.find((q) => q.main === f.main && sameShop(q.name, f.name));
