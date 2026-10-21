@@ -32,10 +32,12 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);
   padding:calc(16px + env(safe-area-inset-top,0px)) 16px 12px;display:flex;flex-direction:column;gap:12px}
 .brand{display:flex;align-items:center;gap:10px}
 .brand-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
-.brand-text span{font-size:12px;font-weight:700;color:var(--gold-ink)}
-.brand-text b{font-size:20px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-text span{font-size:12px;font-weight:700;color:var(--gold-ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand-text b{font-size:20px;font-weight:900;line-height:1.3;word-break:keep-all}
 .map-toggle{flex:none;height:40px;padding:0 12px;border-radius:12px;border:0;background:var(--card);display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700}
 .map-toggle svg{color:var(--gold-ink)}
+.line-btn{flex:none;width:40px;height:40px;justify-content:center;border-radius:12px;background:#06C755;color:#fff;display:flex;align-items:center;gap:4px;font-size:13px;font-weight:700;text-decoration:none}
+.line-btn:active{transform:scale(.97)}
 .map-toggle[aria-expanded="true"]{background:var(--ink);color:var(--gold)}
 .map-toggle[aria-expanded="true"] svg{color:var(--gold)}
 .round{width:44px;height:44px;border-radius:22px;border:0;background:var(--card);display:grid;place-items:center;flex:none}
@@ -162,7 +164,8 @@ nav.bottom button[aria-current="page"]{background:var(--ink);color:var(--gold)}
 <div class="app">
   <header>
     <div class="brand">
-      <div class="brand-text"><span>台中捷運北屯總站・方圓 10 公里</span><b>機捷特區・單元12生活區</b></div>
+      <div class="brand-text"><span>台中捷運北屯總站・方圓 10 公里</span><b>機捷特區・<wbr>單元12生活區</b></div>
+      <a class="line-btn" id="lineBtn" target="_blank" rel="noopener" aria-label="北屯舊社里長 謝秉憲 官方 LINE" title="舊社里長官方 LINE" hidden><svg width="22" height="22" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 3C6.5 3 2 6.6 2 11c0 3.9 3.5 7.2 8.3 7.9.3.1.8.2.9.5.1.3.1.7 0 1l-.1.9c0 .3-.2 1 .9.5s5.9-3.5 8.1-6C21.4 14.3 22 12.7 22 11c0-4.4-4.5-8-10-8z"/></svg></a>
       <button class="map-toggle" id="mapToggle" aria-expanded="false" aria-controls="mapcard"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg><span>地圖</span></button>
     </div>
     <label class="search" for="q">
@@ -246,7 +249,9 @@ const CONFIG = {
   // sheetCsvUrl：投稿表單的試算表（審核欄打勾的才會顯示，會「加進」內建資料，不會取代）
   sheetCsvUrl: '',
   // formUrl：投稿用的 Google 表單
-  formUrl: ''
+  formUrl: '',
+  // lineUrl：北屯舊社里長 謝秉憲 官方 LINE（貼上 lin.ee 或 line.me 連結；空白就不顯示按鈕）
+  lineUrl: 'https://line.me/R/ti/p/@900rucza'
 };
 async function loadConfig() {
   try {
@@ -829,6 +834,7 @@ async function boot() {
   finishPlaces(STORES.map((p) => Object.assign({}, p)));
   renderStats(); renderAll();
   await loadConfig();
+  if (CONFIG.lineUrl) { $('#lineBtn').href = CONFIG.lineUrl; $('#lineBtn').hidden = false; }
   if (CONFIG.sheetCsvUrl) {
     try {
       const res = await fetch(CONFIG.sheetCsvUrl, { cache: 'no-store' });
