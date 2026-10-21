@@ -8,48 +8,47 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
 <style>
-/* 版面：手機單欄，桌機置中 480px；白色卡片浮在暖灰底上 */
+/* B1 黑金：暖灰底、白卡片、黑色選中＋金色字；手機單欄，桌機置中 480px */
 :root{
-  --bg:#F6F5F2; --card:#FFFFFF; --ink:#1F1F1F; --sub:#6B6B6B; --line:#E4E1DA; --field:#F4F2EE;
-  --accent:#F08C00; --accent-ink:#C2410C;
-  --shadow:0 4px 18px rgba(30,25,15,.07);
+  --bg:#F3F2EF; --card:#FFFFFF; --ink:#141414; --sub:#5E5E5E; --line:#E2DFD8; --seg:#E5E3DE;
+  --gold:#E3B23C; --gold-ink:#7E6420; --soft:#F4E8C8; --cream:#FAF4E4;
+  --accent:#141414; --accent-ink:#7E6420;
+  --shadow:0 2px 10px rgba(20,20,20,.05);
   --font:'Noto Sans TC',system-ui,-apple-system,'PingFang TC','Microsoft JhengHei',sans-serif;
 }
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);-webkit-text-size-adjust:100%;overscroll-behavior-y:none}
 button,a{touch-action:manipulation;-webkit-tap-highlight-color:transparent}
-.card-main:active,.tile:active .ic,.chip:active,.toggle:active{transform:scale(.97)}
-.card-main,.tile .ic,.chip,.toggle{transition:transform .12s ease}
-.map-toggle{flex:none;height:40px;padding:0 14px 0 12px;border-radius:20px;border:1px solid var(--line);background:var(--card);display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700}
-.map-toggle[aria-expanded="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
 button,input{font:inherit;color:inherit}
 button{cursor:pointer}
-:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
 [hidden]{display:none!important}
+.card-main:active,.tile:active,.chip:active,.toggle:active{transform:scale(.97)}
+.card-main,.tile,.chip,.toggle{transition:transform .12s ease}
 .app{max-width:480px;margin:0 auto;min-height:100vh;position:relative;padding-bottom:110px}
 
 /* 頂部 */
-header{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px solid #ECEAE5;
-  padding:calc(14px + env(safe-area-inset-top,0px)) 16px 0;display:flex;flex-direction:column;gap:12px}
+header{position:sticky;top:0;z-index:20;background:var(--bg);
+  padding:calc(16px + env(safe-area-inset-top,0px)) 16px 12px;display:flex;flex-direction:column;gap:12px}
 .brand{display:flex;align-items:center;gap:10px}
-.logo{width:38px;height:38px;border-radius:12px;background:var(--ink);display:grid;place-items:center;flex:none}
-.brand-text{flex:1;min-width:0;display:flex;flex-direction:column}
-.brand-text b{font-size:18px;font-weight:900;letter-spacing:.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.brand-text span{font-size:12px;color:var(--sub)}
-.round{width:44px;height:44px;border-radius:22px;border:0;background:var(--field);display:grid;place-items:center;flex:none}
-.search{display:flex;align-items:center;gap:10px;height:48px;padding:0 16px;border-radius:14px;background:var(--field)}
+.brand-text{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.brand-text span{font-size:12px;font-weight:700;color:var(--gold-ink)}
+.brand-text b{font-size:20px;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.map-toggle{flex:none;height:40px;padding:0 12px;border-radius:12px;border:0;background:var(--card);display:flex;align-items:center;gap:6px;font-size:14px;font-weight:700}
+.map-toggle svg{color:var(--gold-ink)}
+.map-toggle[aria-expanded="true"]{background:var(--ink);color:var(--gold)}
+.map-toggle[aria-expanded="true"] svg{color:var(--gold)}
+.round{width:44px;height:44px;border-radius:22px;border:0;background:var(--card);display:grid;place-items:center;flex:none}
+.search{display:flex;align-items:center;gap:10px;height:48px;padding:0 14px;border-radius:14px;background:var(--card)}
 .search input{flex:1;min-width:0;border:0;background:transparent;font-size:16px;outline:none}
-.tabs{display:flex;overflow-x:auto;margin:0 -4px;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab{flex:none;height:46px;padding:0 12px;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;font-size:16px;color:var(--sub);font-weight:500}
-.tab::after{content:"";width:100%;height:3px;border-radius:2px;background:transparent}
-.tab[aria-pressed="true"]{color:var(--ink);font-weight:900}
-.tab[aria-pressed="true"]::after{background:var(--accent)}
+.tabs{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));padding:4px;border-radius:14px;background:var(--seg)}
+.tab{height:38px;padding:0;border:0;border-radius:10px;background:transparent;font-size:14px;font-weight:700;color:var(--sub)}
+.tab[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
 
 /* 地圖卡 */
-.mapcard{margin:16px 16px 0;border-radius:20px;overflow:hidden;background:var(--card);box-shadow:var(--shadow)}
+.mapcard{margin:4px 16px 0;border-radius:20px;overflow:hidden;background:var(--card);box-shadow:var(--shadow)}
 .mapwrap{position:relative;height:230px}
-#map{position:absolute;inset:0;background:#ECEEE8}
+#map{position:absolute;inset:0;background:#ECEBE6}
 .map-chip{position:absolute;top:12px;left:12px;z-index:500;height:30px;padding:0 12px;border-radius:15px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.12);font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
 .map-close{position:absolute;top:calc(12px + env(safe-area-inset-top,0px));right:12px;z-index:600}
 .mapfoot{padding:12px 12px 12px 16px;display:flex;align-items:center;justify-content:space-between;gap:8px}
@@ -57,106 +56,103 @@ header{position:sticky;top:0;z-index:20;background:var(--card);border-bottom:1px
 .stats span{display:flex;align-items:center;gap:5px}
 .stats b{font-weight:900;color:var(--ink)}
 .dot{width:8px;height:8px;border-radius:4px;display:inline-block;flex:none}
-.pill-dark{flex:none;height:40px;padding:0 16px;border-radius:20px;border:0;background:var(--ink);color:#fff;font-size:14px;font-weight:700}
+.pill-dark{flex:none;height:40px;padding:0 16px;border-radius:20px;border:0;background:var(--ink);color:var(--gold);font-size:14px;font-weight:700}
 .mapcard.full{position:fixed;inset:0;margin:0;border-radius:0;z-index:60}
 .mapcard.full .mapwrap{height:100%}
 .mapcard.full .mapfoot{display:none}
 
-/* 區塊 */
-.sec-h{padding:20px 16px 10px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-.sec-h h2{margin:0;font-size:19px;font-weight:900;text-wrap:balance}
+/* 區塊標題 */
+.sec-h{padding:18px 16px 10px;display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.sec-h h2{margin:0;font-size:17px;font-weight:900;text-wrap:balance}
 .sec-h span{font-size:13px;color:var(--sub)}
-.tiles{display:flex;gap:6px;overflow-x:auto;padding:4px 16px 6px;scroll-snap-type:x proximity;scroll-padding-left:16px;scrollbar-width:none;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
-.tiles::-webkit-scrollbar{display:none}
-.tile{flex:0 0 auto;min-width:74px;scroll-snap-align:start;padding:0;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:7px}
-.tile .ic{width:58px;height:58px;border-radius:20px;border:2px solid transparent;display:grid;place-items:center}
-.tile span:last-child{font-size:12px;line-height:1.3;max-width:82px;text-align:center;word-break:keep-all}
-.tile{width:84px}
-.tip{margin:10px 16px 0;padding:12px 14px;border-radius:14px;background:#FFF8E6;display:flex;gap:10px;font-size:14px;line-height:1.6;color:#4A3A12}
-.tip svg{flex:none;margin-top:2px}
-.tip b{display:block;font-size:12px;color:#8A5A00}
-.tile[aria-pressed="true"] span:last-child{font-weight:900}
-.chips{display:flex;gap:8px;padding:0 16px 2px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
-.chips>*{scroll-snap-align:start}
-/* 依商圈找：方形按鈕（裡面是店家數） */
-.zone{flex:0 0 auto;min-width:64px;padding:0;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:6px}
-.zone .sq{width:56px;height:56px;border-radius:14px;border:1.5px solid var(--line);background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;color:var(--ink);transition:transform .12s ease}
-.zone .sq b{font-size:19px;font-weight:900;font-variant-numeric:tabular-nums}
-.zone .sq small{font-size:11px;font-weight:700;color:var(--sub);margin-top:2px}
-.zone .lbl{font-size:13px;white-space:nowrap}
-.zone[aria-pressed="true"] .sq{background:var(--accent);border-color:var(--accent);color:#fff}
-.zone[aria-pressed="true"] .sq small{color:#fff}
-.zone[aria-pressed="true"] .lbl{font-weight:900}
-.zone:active .sq{transform:scale(.95)}
-/* 距離總站：圓形按鈕 */
-.dist{flex:0 0 auto;min-width:64px;padding:0;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:6px}
-.dist .ring{width:56px;height:56px;border-radius:50%;border:1.5px solid var(--line);background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;color:var(--ink);transition:transform .12s ease}
-.dist .ring b{font-size:19px;font-weight:900}
-.dist .ring small{font-size:11px;font-weight:700;color:var(--sub);margin-top:2px}
-.dist .lbl{font-size:13px;white-space:nowrap}
-.dist[aria-pressed="true"] .ring{background:var(--ink);border-color:var(--ink);color:#fff}
-.dist[aria-pressed="true"] .ring small{color:#ddd}
-.dist[aria-pressed="true"] .lbl{font-weight:900}
-.dist:active .ring{transform:scale(.95)}
-.chips::-webkit-scrollbar{display:none}
-.chip{flex:none;height:44px;padding:0 16px;border-radius:22px;border:1px solid var(--line);background:var(--card);font-size:15px}
-.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
-.seg{margin:0 16px 14px;display:grid;grid-template-columns:1fr 1fr 1fr;padding:4px;border-radius:14px;background:#ECEAE5}
-.seg button{height:40px;border-radius:10px;border:0;background:transparent;font-size:14px;font-weight:700;color:#555}
-.seg button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.12)}
-.notice{margin:0 16px 14px;font-size:13px;color:var(--accent-ink)}
 
-/* 結果卡片 */
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:0 16px}
+/* 第二層分類：一次全部顯示，每排 4 格 */
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:0 16px}
+.tile{min-width:0;min-height:62px;padding:8px 2px;border:0;border-radius:14px;background:var(--card);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.tile .ic{display:grid;place-items:center;color:var(--gold-ink)}
+.tile .tl{font-size:12px;font-weight:700;line-height:1.25;text-align:center;word-break:keep-all}
+.tile .tl small{font-size:11px;font-weight:500;opacity:.6;margin-left:2px}
+.tile[aria-pressed="true"]{background:var(--ink);color:var(--gold)}
+.tile[aria-pressed="true"] .ic{color:var(--gold)}
+.tip{margin:10px 16px 0;padding:12px 14px;border-radius:14px;background:var(--cream);display:flex;gap:10px;font-size:14px;line-height:1.6;color:#3A3020}
+.tip svg{flex:none;margin-top:2px}
+.tip b{display:block;font-size:12px;color:var(--gold-ink)}
+
+/* 商圈（方形）、距離（圓形） */
+.chips{display:flex;gap:8px;padding:0 16px 2px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity;scroll-padding-inline:16px;-webkit-mask-image:linear-gradient(90deg,#000 88%,transparent);mask-image:linear-gradient(90deg,#000 88%,transparent)}
+.chips::-webkit-scrollbar{display:none}
+.chips>*{scroll-snap-align:start}
+.zone,.dist{flex:0 0 auto;min-width:64px;padding:0;border:0;background:transparent;display:flex;flex-direction:column;align-items:center;gap:6px}
+.zone .sq,.dist .ring{width:56px;height:56px;border:0;background:var(--card);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;color:var(--ink);transition:transform .12s ease}
+.zone .sq{border-radius:14px}
+.dist .ring{border-radius:50%}
+.zone .sq b,.dist .ring b{font-size:19px;font-weight:900;font-variant-numeric:tabular-nums}
+.zone .sq small,.dist .ring small{font-size:11px;font-weight:700;color:var(--sub);margin-top:2px}
+.zone .lbl,.dist .lbl{font-size:13px;white-space:nowrap}
+.zone[aria-pressed="true"] .sq,.dist[aria-pressed="true"] .ring{background:var(--ink);color:var(--gold)}
+.zone[aria-pressed="true"] .sq small,.dist[aria-pressed="true"] .ring small{color:var(--gold)}
+.zone[aria-pressed="true"] .lbl,.dist[aria-pressed="true"] .lbl{font-weight:900}
+.zone:active .sq,.dist:active .ring{transform:scale(.95)}
+.chip{flex:none;height:44px;padding:0 16px;border-radius:22px;border:0;background:var(--card);font-size:15px;font-weight:500}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--gold);font-weight:700}
+
+/* 排序、篩選 */
+.seg{margin:0 16px 12px;display:grid;grid-template-columns:1fr 1fr 1fr;padding:4px;border-radius:14px;background:var(--seg)}
+.seg button{height:38px;border-radius:10px;border:0;background:transparent;font-size:14px;font-weight:700;color:var(--sub)}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.filters{display:flex;gap:8px;padding:0 16px 12px;flex-wrap:wrap}
+.toggle{height:36px;padding:0 14px;border-radius:18px;border:0;background:var(--card);font-size:13px;font-weight:700}
+.toggle[aria-pressed="true"]{background:var(--ink);color:var(--gold)}
+.notice{margin:0 16px 14px;font-size:13px;color:var(--gold-ink)}
+
+/* 結果：單欄卡片，左邊是公里數 */
+.grid{display:flex;flex-direction:column;gap:10px;padding:0 16px}
 .card{position:relative;min-width:0}
-.card-main{width:100%;padding:0;border:2px solid transparent;border-radius:18px;overflow:hidden;background:var(--card);box-shadow:0 4px 14px rgba(30,25,15,.07);text-align:left;display:flex;flex-direction:column}
+.card-main{width:100%;padding:12px 48px 12px 12px;border:2px solid transparent;border-radius:18px;background:var(--card);box-shadow:var(--shadow);text-align:left;display:flex;gap:12px;align-items:flex-start}
 .card.closed .card-main{border-color:#E03131}
 .card.warn .card-main{border-color:#F59F00}
-.card.closed .card-body b{text-decoration:line-through;text-decoration-color:#E03131}
-.card-img{position:relative;height:100px;display:grid;place-items:center}
-.badge.open{bottom:10px;right:10px}
-.st-open{background:#E6F4EA;color:#1E7B3A}.st-shut{background:#FDEDED;color:#C92A2A}.st-warn{background:#FFF4DB;color:#8A5A00}.st-unk{background:#F1F1F1;color:#555}.st-new{background:#E6F0FA;color:#1864AB}
-.rec{display:inline-flex;align-items:center;gap:4px;align-self:flex-start;margin-top:4px;height:22px;padding:0 8px;border-radius:11px;background:#FFF0DF;color:#B8480A;font-size:12px;font-weight:700}
-.review{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:12px;line-height:1.5;color:#444;margin-top:2px}
-.srcs{display:flex;flex-wrap:wrap;gap:4px;margin-top:5px}
-.src{font-size:11px;padding:1px 6px;border-radius:6px;border:1px solid var(--line);color:var(--sub);white-space:nowrap}
-.src.g{border-color:#F08C00;color:var(--accent-ink)}
-.filters{display:flex;gap:8px;padding:0 16px 14px;flex-wrap:wrap}
-.toggle{height:36px;padding:0 12px;border-radius:18px;border:1px solid var(--line);background:var(--card);font-size:13px;font-weight:700}
-.toggle[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
-.pillrow{display:flex;flex-wrap:wrap;gap:6px}
-.pill{height:24px;padding:0 9px;border-radius:12px;font-size:12px;font-weight:700;display:inline-flex;align-items:center}
-.quote{padding:14px 16px;border-radius:14px;background:#FFF8E6;display:flex;flex-direction:column;gap:6px;font-size:15px;line-height:1.7}
-.quote small{font-size:12px;font-weight:700;color:#8A5A00}
-.badge{position:absolute;height:24px;padding:0 9px;border-radius:12px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:3px}
-.badge.cat{top:10px;left:10px;background:#fff}
-.badge.km{bottom:10px;left:10px;background:rgba(31,31,31,.8);color:#fff}
-.card-body{padding:11px 12px 14px;display:flex;flex-direction:column;gap:3px}
+.kmbox{flex:none;width:56px;height:56px;border-radius:14px;background:var(--soft);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1}
+.kmbox b{font-size:17px;font-weight:900;color:var(--ink);font-variant-numeric:tabular-nums}
+.kmbox small{font-size:10px;font-weight:700;color:var(--gold-ink);margin-top:3px}
+.card-body{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
 .card-body b{font-size:15px;font-weight:900;line-height:1.35}
-.card-body span{font-size:12px;color:var(--sub);line-height:1.45}
-.fav{position:absolute;top:2px;right:2px;width:44px;height:44px;border:0;background:transparent;display:grid;place-items:center;padding:0}
-.fav span{width:32px;height:32px;border-radius:16px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.12);display:grid;place-items:center}
+.card.closed .card-body b{text-decoration:line-through;text-decoration-color:#E03131}
+.meta{display:flex;align-items:center;gap:6px;min-width:0;font-size:12px;color:var(--sub)}
+.meta span:last-child{min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st{flex:none;height:20px;padding:0 7px;border-radius:10px;font-size:11px;font-weight:700;display:inline-flex;align-items:center}
+.st-open{background:#E6F4EA;color:#1E7B3A}.st-shut{background:#FDEDED;color:#C92A2A}.st-warn{background:#FFF4DB;color:#8A5A00}.st-unk{background:#F1F1F1;color:#555}.st-new{background:#E6F0FA;color:#1864AB}
+.rec{display:inline-flex;align-items:center;gap:4px;align-self:flex-start;margin-top:2px;height:22px;padding:0 8px;border-radius:11px;background:var(--soft);color:var(--gold-ink);font-size:12px;font-weight:700}
+.review{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:12px;line-height:1.5;color:#444}
+.srcs{display:flex;flex-wrap:wrap;gap:4px;margin-top:3px}
+.src{font-size:11px;padding:1px 6px;border-radius:6px;border:1px solid var(--line);color:var(--sub);white-space:nowrap}
+.src.g{border-color:#C9A24A;color:var(--gold-ink);font-weight:700}
+.fav{position:absolute;top:4px;right:4px;width:44px;height:44px;border:0;background:transparent;display:grid;place-items:center;padding:0}
 .empty{margin:0 16px;padding:28px 20px;border-radius:18px;background:var(--card);text-align:center;display:flex;flex-direction:column;gap:6px}
 .empty b{font-size:15px}.empty span{font-size:13px;color:var(--sub)}
 
 /* 底部選單 */
-nav.bottom{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));width:calc(min(480px,100vw) - 32px);height:68px;padding:6px;border-radius:34px;background:#fff;box-shadow:0 8px 28px rgba(30,25,15,.16);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;z-index:70}
-nav.bottom button{border:0;border-radius:28px;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:12px;font-weight:700;color:#444}
-nav.bottom button[aria-current="page"]{background:var(--ink);color:#fff}
+nav.bottom{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(18px + env(safe-area-inset-bottom,0px));width:calc(min(480px,100vw) - 32px);height:64px;padding:6px;border-radius:32px;background:#fff;box-shadow:0 8px 28px rgba(20,20,20,.14);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;z-index:70}
+nav.bottom button{border:0;border-radius:26px;background:transparent;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:12px;font-weight:700;color:#6E6E6E}
+nav.bottom button[aria-current="page"]{background:var(--ink);color:var(--gold)}
 
 /* 詳細資料 */
-.scrim{position:fixed;inset:0;background:rgba(20,16,10,.45);z-index:80}
+.scrim{position:fixed;inset:0;background:rgba(20,20,20,.45);z-index:80}
 .sheet{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(480px,100vw);z-index:90;background:#fff;border-radius:26px 26px 0 0;padding:12px 20px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:16px;max-height:88vh;overflow-y:auto}
 .grip{align-self:center;width:40px;height:4px;border-radius:2px;background:#DADADA}
 .sheet-head{display:flex;gap:14px;align-items:center}
-.sheet-ic{flex:none;width:72px;height:72px;border-radius:18px;display:grid;place-items:center}
+.sheet-ic{flex:none;width:72px;height:72px;border-radius:18px;background:var(--soft);color:var(--gold-ink);display:grid;place-items:center}
 .sheet-head h2{margin:2px 0;font-size:21px;font-weight:900}
-.sheet-tag{align-self:flex-start;height:24px;padding:0 9px;border-radius:12px;font-size:12px;font-weight:700;display:inline-flex;align-items:center}
-.sheet-km{font-size:13px;font-weight:700;color:var(--accent-ink)}
+.sheet-tag{align-self:flex-start;height:24px;padding:0 9px;border-radius:12px;background:var(--soft);color:var(--gold-ink);font-size:12px;font-weight:700;display:inline-flex;align-items:center}
+.sheet-km{font-size:13px;font-weight:700;color:var(--gold-ink)}
+.pillrow{display:flex;flex-wrap:wrap;gap:6px}
+.pill{height:24px;padding:0 9px;border-radius:12px;font-size:12px;font-weight:700;display:inline-flex;align-items:center}
+.quote{padding:14px 16px;border-radius:14px;background:var(--cream);display:flex;flex-direction:column;gap:6px;font-size:15px;line-height:1.7}
+.quote small{font-size:12px;font-weight:700;color:var(--gold-ink)}
 .info{padding:14px 16px;border-radius:14px;background:var(--bg);display:flex;flex-direction:column;gap:6px;font-size:14px;line-height:1.6;color:#444}
 .sheet-actions{display:flex;gap:10px}
 .btn-line{flex:none;height:54px;padding:0 18px;border-radius:14px;border:1px solid #DADADA;background:#fff;font-size:15px;font-weight:700}
-.btn-go{flex:1;height:54px;border-radius:14px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;gap:8px;font-size:16px;font-weight:700;text-decoration:none}
+.btn-go{flex:1;height:54px;border-radius:14px;background:var(--ink);color:var(--gold);display:flex;align-items:center;justify-content:center;gap:8px;font-size:16px;font-weight:700;text-decoration:none}
+.btn-go svg{stroke:var(--gold)}
 
 .leaflet-container{font-family:var(--font)}
 @media (prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
@@ -166,13 +162,12 @@ nav.bottom button[aria-current="page"]{background:var(--ink);color:#fff}
 <div class="app">
   <header>
     <div class="brand">
-      <span class="logo"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5" fill="#F08C00" stroke="none"/></svg></span>
-      <div class="brand-text"><b>機捷特區・單元12生活區</b><span>台中捷運北屯總站・方圓 10 公里</span></div>
+      <div class="brand-text"><span>台中捷運北屯總站・方圓 10 公里</span><b>機捷特區・單元12生活區</b></div>
       <button class="map-toggle" id="mapToggle" aria-expanded="false" aria-controls="mapcard"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg><span>地圖</span></button>
     </div>
     <label class="search" for="q">
-      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#6B6B6B" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-      <input id="q" type="search" placeholder="搜尋科別、料理、店名" autocomplete="off">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#5E5E5E" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="搜尋店名、科別、推薦原因" autocomplete="off">
     </label>
     <div class="tabs" id="tabs"></div>
   </header>
@@ -189,7 +184,7 @@ nav.bottom button[aria-current="page"]{background:var(--ink);color:#fff}
     </div>
   </section>
 
-  <div class="sec-h"><h2 id="tileTitle">想找什麼？</h2></div>
+  <div class="sec-h"><h2 id="tileTitle">想找什麼？</h2><span id="tileHint" hidden>再按一次看全部</span></div>
   <div class="tiles" id="tiles"></div>
   <div class="tip" id="tip" hidden></div>
 
@@ -237,7 +232,7 @@ nav.bottom button[aria-current="page"]{background:var(--ink);color:#fff}
   <div class="info" id="sInfo"></div>
   <div class="sheet-actions">
     <button class="btn-line" id="sBack">返回</button>
-    <a class="btn-go" id="sGo" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>開啟 Google 地圖導航</a>
+    <a class="btn-go" id="sGo" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>開啟 Google 地圖導航</a>
   </div>
 </div>
 
@@ -606,7 +601,7 @@ L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r
   maxZoom: 19, subdomains: 'abcd',
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
 }).addTo(map);
-L.circle(CONFIG.center, { radius: CONFIG.radiusKm * 1000, color: '#E8590C', weight: 1.5, dashArray: '6 6', fillColor: '#F08C00', fillOpacity: .05, interactive: false }).addTo(map);
+L.circle(CONFIG.center, { radius: CONFIG.radiusKm * 1000, color: '#141414', weight: 1.5, dashArray: '6 6', fillColor: '#E3B23C', fillOpacity: .07, interactive: false }).addTo(map);
 L.circleMarker(CONFIG.center, { radius: 8, color: '#fff', weight: 3, fillColor: '#1F1F1F', fillOpacity: 1 }).addTo(map).bindTooltip('北屯總站', { permanent: false });
 const layer = L.layerGroup().addTo(map);
 let meMarker = null;
@@ -645,25 +640,32 @@ function renderStats() {
   $('#stats').innerHTML = MAIN_ORDER.map((m) =>
     `<span><i class="dot" style="background:${GROUPS[m].dot}"></i>${m} <b>${state.places.filter((p) => p.main === m).length}</b></span>`).join('');
 }
+/* 第二層分類一次全部顯示；名稱縮短成一行放得下的字，完整名稱放在 aria-label */
+const SHORT = { '小吃・麵飯': '小吃麵飯', '雞排・鹹酥雞・滷味': '雞排滷味', '便當・外送': '便當外送', '甜點・麵包・冰品': '甜點冰品', '飲料・咖啡・酒吧': '飲料咖啡', '火鍋・燒肉・鍋物': '火鍋燒肉', '早餐・早午餐': '早餐', '聚餐・合菜': '聚餐合菜',
+  '小孩看病・耳鼻喉': '小兒耳鼻喉', '感冒・疫苗・家醫': '家醫疫苗', '皮膚科・醫美': '皮膚醫美', '中醫・針灸': '中醫針灸', '骨科・復健': '骨科復健', '眼科・配眼鏡': '眼科眼鏡', '胃腸鏡・外科專科': '胃腸外科', '醫院・藥局': '醫院藥局',
+  '超市・賣場・哪裡買': '超市賣場', '補習・才藝': '補習才藝', '幼兒園・托嬰': '幼兒托嬰', '汽機車・洗車': '汽機車', '寵物美容・住宿・醫院': '寵物', '洗冷氣・水電・搬家': '水電搬家', '剪髮・美甲・美容': '剪髮美甲', '按摩・整復': '按摩整復', '電腦・手機': '電腦手機', '洗衣・改衣・洗鞋': '洗衣改衣', '拜拜・土地公': '拜拜',
+  '健身・皮拉提斯': '健身皮拉提斯', '球場・揪團': '球場揪團' };
 function renderTiles() {
   const main = mainOf();
   let items;
   if (main === '全部') {
     $('#tileTitle').textContent = '想找什麼？';
-    items = MAIN_ORDER.map((m) => ({ key: m, label: m, g: GROUPS[m], on: false, act: 'tab' }));
+    $('#tileHint').hidden = true;
+    items = MAIN_ORDER.map((m) => ({ key: m, label: m, ic: ICON[m], on: false, act: 'tab', n: state.places.filter((p) => p.main === m).length }));
   } else {
     $('#tileTitle').textContent = main + '分類';
-    items = ['全部'].concat(GROUPS[main].subs).map((s) => ({ key: s, label: s, g: GROUPS[main], on: s === state.sub, act: 'sub' }));
+    $('#tileHint').hidden = state.sub === '全部';
+    items = GROUPS[main].subs.map((s) => ({ key: s, label: SHORT[s] || s, ic: ICON[s] || ICON[main], on: s === state.sub, act: 'sub',
+      n: state.places.filter((p) => p.main === main && catsOf(p).some(([x]) => x === s)).length }));
   }
-  setHTML('#tiles', items.map((it) =>
-    `<button class="tile" data-${it.act}="${it.key}" aria-pressed="${it.on}">
-      <span class="ic" style="background:${it.g.tint};border-color:${it.on ? it.g.color : 'transparent'}">${svg(ICON[it.key] || ICON[main === '全部' ? it.key : main], it.g.color, 28, 1.8)}</span>
-      <span>${it.label}</span></button>`).join(''));
+  $('#tiles').innerHTML = items.map((it) =>
+    `<button class="tile" data-${it.act}="${it.key}" aria-pressed="${it.on}" aria-label="${it.key}，${it.n} 家">
+      <span class="ic">${svg(it.ic, 'currentColor', 22, 1.9)}</span><span class="tl">${it.label}<small>${it.n}</small></span></button>`).join('');
 }
 function renderTip() {
   const t = state.sub !== '全部' ? TIPS[state.sub] : null;
   $('#tip').hidden = !t;
-  if (t) $('#tip').innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B8860B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg><span><b>群友常問</b>${esc(t)}</span>`;
+  if (t) $('#tip').innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7E6420" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg><span><b>群友常問</b>${esc(t)}</span>`;
 }
 function renderChips() {
   /* 只有美食有第三層細分類；生活、運動、醫院到第二層為止 */
@@ -696,23 +698,22 @@ function renderResults() {
   $('#empty').hidden = list.length > 0;
   $('#grid').innerHTML = list.map((p) => {
     const g = GROUPS[p.main], fav = !!state.favs[p.id], st = openState(p);
-    const d = distOf(p), kmText = d === 999 ? '位置待補' : (p.approx ? '約 ' : '') + d.toFixed(1) + ' km';
+    const d = distOf(p);
     const border = st.key === 'closed' ? 'closed' : (st.key === 'warn' ? 'warn' : '');
     const srcs = (p.src || []).filter((s) => s !== '範例').map((s) => `<span class="src${s === '群友推薦' ? ' g' : ''}">${s}</span>`).join('');
+    const cat = p.main === '美食' ? (p.third || SHORT[p.sub] || p.sub) : (SHORT[p.sub] || p.sub);
+    const stTag = st.key !== 'unknown' ? `<span class="st ${st.cls}">${st.label}</span>` : (p.status === '新開幕' ? `<span class="st st-new">新開幕</span>` : '');
     return `<div class="card ${border}">
       <button class="card-main" data-open="${p.id}">
-        <span class="card-img" style="background:${g.tint}">${svg(ICON[p.sub] || ICON[p.main], g.color, 40, 1.4)}
-          <span class="badge cat" style="color:${g.color}">${esc(p.main === '美食' ? (p.third || p.sub) : p.sub)}</span>
-          <span class="badge km"><svg width="11" height="11" viewBox="0 0 24 24" fill="#fff" aria-hidden="true"><path d="M12 22s-7-6.4-7-12a7 7 0 0 1 14 0c0 5.6-7 12-7 12z"/></svg>${kmText}</span>
-          ${st.key !== 'unknown' ? `<span class="badge open ${st.cls}">${st.label}</span>` : (p.status === '新開幕' ? `<span class="badge open st-new">新開幕</span>` : '')}
-        </span>
-        <span class="card-body"><b>${esc(p.name)}</b><span>${esc(p.loc || (p.main + ' / ' + p.sub))}</span>
+        <span class="kmbox">${d === 999 ? '<b>—</b><small>待補</small>' : `<b>${d.toFixed(1)}</b><small>${p.approx ? '約 km' : 'km'}</small>`}</span>
+        <span class="card-body"><b>${esc(p.name)}</b>
+          <span class="meta">${stTag}<span>${esc(cat)}${p.loc ? '・' + esc(p.loc) : ''}</span></span>
           ${p.n ? `<span class="rec">👍 ${p.n} 位群友推薦</span>` : ''}
           ${(p.why || p.note) ? `<span class="review">${esc(p.why || p.note)}</span>` : ''}
           ${srcs ? `<span class="srcs">${srcs}</span>` : ''}</span>
       </button>
       <button class="fav" data-fav="${p.id}" aria-label="收藏 ${esc(p.name)}" aria-pressed="${fav}">
-        <span><svg width="16" height="16" viewBox="0 0 24 24" fill="${fav ? '#F08C00' : 'none'}" stroke="${fav ? '#F08C00' : '#444'}" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg></span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="${fav ? '#E3B23C' : 'none'}" stroke="${fav ? '#7E6420' : '#9A9A9A'}" stroke-width="2.2" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg>
       </button></div>`;
   }).join('');
   layer.clearLayers();
@@ -729,8 +730,7 @@ function renderAll() { renderTabs(); renderTiles(); renderTip(); renderZones(); 
 function openSheet(id) {
   const p = state.places.find((x) => x.id === id); if (!p) return;
   const g = GROUPS[p.main];
-  $('#sIc').style.background = g.tint; $('#sIc').innerHTML = svg(ICON[p.sub] || ICON[p.main], g.color, 32);
-  $('#sTag').style.background = g.tint; $('#sTag').style.color = g.color;
+  $('#sIc').innerHTML = svg(ICON[p.sub] || ICON[p.main], 'currentColor', 32);
   $('#sTag').textContent = p.main === '美食' && p.third ? p.sub + '・' + p.third : p.main + '・' + p.sub;
   $('#sName').textContent = p.name;
   $('#sKm').textContent = hasPos(p) ? '距北屯總站' + (p.approx ? '約 ' : ' ') + p.km.toFixed(1) + ' km' : '位置待補';
@@ -742,7 +742,7 @@ function openSheet(id) {
   const said = p.why || p.note;
   $('#sQuote').hidden = !said;
   $('#sQuote').innerHTML = `<small>群友怎麼說${p.n ? `（${p.n} 位群友推薦）` : ''}</small><span>${esc(said || '')}</span>` +
-    (p.why && p.note ? `<span style="font-size:14px;color:#5C4A1A;border-top:1px dashed #E8D9A8;padding-top:6px">${esc(p.note)}</span>` : '');
+    (p.why && p.note ? `<span style="font-size:14px;color:#4A3E22;border-top:1px dashed #E3D3A6;padding-top:6px">${esc(p.note)}</span>` : '');
   $('#sInfo').innerHTML = `<span>位置：${esc(p.loc || '—')}</span>` + (p.phone ? `<span>電話：${esc(p.phone)}</span>` : '') + (p.by ? `<span>推薦人：${esc(p.by)}</span>` : '') + `<span>營業時間：${esc(p.hours || '群組裡沒有提到，出發前請先查 Google 地圖')}</span>` +
     (p.approx ? `<span style="color:#6B6B6B">地圖上的點是路段的大約位置，實際以導航為準。</span>` : '');
   $('#sGo').href = navUrl(p);
@@ -774,7 +774,7 @@ document.addEventListener('click', (e) => {
   const t = e.target.closest('button,a'); if (!t) return;
   const ds = t.dataset;
   if (ds.tab) { state.tab = ds.tab; state.sub = '全部'; state.third = '全部'; $('#tiles').scrollLeft = 0; $('#chips').scrollLeft = 0; setNav(ds.tab === '收藏' ? 'fav' : 'home'); renderAll(); }
-  else if (ds.sub) { state.sub = ds.sub; state.third = '全部'; renderTiles(); renderTip(); renderChips(); renderResults(); }
+  else if (ds.sub) { state.sub = ds.sub === state.sub ? '全部' : ds.sub; state.third = '全部'; renderTiles(); renderTip(); renderChips(); renderResults(); }
   else if (ds.third) { state.third = ds.third; renderChips(); renderResults(); }
   else if (ds.zone) { state.zone = ds.zone; renderZones(); renderResults(); }
   else if (ds.dist !== undefined) { state.dist = Number(ds.dist); renderChips(); renderResults(); }
