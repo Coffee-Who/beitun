@@ -46,7 +46,7 @@ header{position:sticky;top:0;z-index:20;background:var(--bg);
 .tab[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.1)}
 
 /* 地圖卡 */
-.mapcard{margin:4px 16px 0;border-radius:20px;overflow:hidden;background:var(--card);box-shadow:var(--shadow)}
+.mapcard{position:relative;z-index:0;isolation:isolate;margin:4px 16px 0;border-radius:20px;overflow:hidden;background:var(--card);box-shadow:var(--shadow)}
 .mapwrap{position:relative;height:230px}
 #map{position:absolute;inset:0;background:#ECEBE6}
 .map-chip{position:absolute;top:12px;left:12px;z-index:500;height:30px;padding:0 12px;border-radius:15px;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.12);font-size:13px;font-weight:700;display:flex;align-items:center;gap:6px}
@@ -597,9 +597,10 @@ function renderZones() {
 
 /* ===== 地圖 ===== */
 const map = L.map('map', { zoomControl: false, attributionControl: true }).setView(CONFIG.center, 12);
-L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-  maxZoom: 19, subdomains: 'abcd',
-  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+/* 底圖：OpenStreetMap 官方圖磚（免金鑰；CARTO 已改成要 API 金鑰） */
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> 貢獻者'
 }).addTo(map);
 L.circle(CONFIG.center, { radius: CONFIG.radiusKm * 1000, color: '#141414', weight: 1.5, dashArray: '6 6', fillColor: '#E3B23C', fillOpacity: .07, interactive: false }).addTo(map);
 L.circleMarker(CONFIG.center, { radius: 8, color: '#fff', weight: 3, fillColor: '#1F1F1F', fillOpacity: 1 }).addTo(map).bindTooltip('北屯總站', { permanent: false });
